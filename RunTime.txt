@@ -1,0 +1,14 @@
+Le temps d'execution de <function main at 0x000001F800C76CA0> est de 2.911 secondes. Timestamp : 1636910949.975025
+Le temps d'execution de <function main at 0x000001F87CBA1E50> est de 3.0706 secondes. Timestamp : 1636910965.060425
+Le temps d'execution de <function main at 0x000001F872A0B700> est de 2.8939 secondes. Timestamp : 1636910987.4061
+Le temps d'execution de <function main at 0x000001F872A01160> est de 3.1628 secondes. Timestamp : 1636910995.061795
+Le temps d'execution de <function main at 0x000001F87CBA1280> est de 2.6191 secondes. Timestamp : 1636911007.078793
+Le temps d'execution de <function main at 0x000001F872A0B160> est de 2.4504 secondes. Timestamp : 1636911015.6944
+Le temps d'execution de <function main at 0x000001F8000BA160> est de 3.1362 secondes. Timestamp : 1636911026.435194
+Le temps d'execution de <function main at 0x0000020EB4B53550> est de 2.6072 secondes. Timestamp : 1636911058.341521
+Le temps d'execution de <function main at 0x000001F879FE1310> est de 3.0372 secondes. Timestamp : 1636911559.480914
+Le temps d'execution de <function main at 0x000001F8798000D0> est de 11.1413 secondes. Timestamp : 1636911767.215704
+Le temps d'execution de <function main at 0x000001F879800550> est de 9.8903 secondes. Timestamp : 1636911850.850591
+Le temps d'execution de <function main at 0x000001F879FE1160> est de 11.2734 secondes. Timestamp : 1636911922.588405
+Le temps d'execution de <function main at 0x000001F800C76C10> est de 3.0005 secondes. Timestamp : 1636911972.084448
+Le temps d'execution de <function main at 0x000001F89D064790> est de 15.433 secondes. Timestamp : 1636912073.876107
