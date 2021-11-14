@@ -9,8 +9,6 @@ import os
 import time
 import datetime
 import streamlit as st
-import streamlit.components.v1 as components
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -123,77 +121,90 @@ def convert_to_datetime(serie):
 
 @exeTime
 def main():
-
+    
+#### LA PARTIE GRISEE CI-DESSOUS CORRESPOND AU PREPROCESSING ENREGISTRE SOUS DF_NV.CSV ####
 
 # --- CHOIX PARAMETRES ---
 
-#Les colonnes que je retire dès le départ sont :
+# #Le dataset chargé est déjà retravailler à partir de full_2020.csv comme suit:
+# #Les colonnes retirées dans df_nv.csv sont :
 
-    df_full_2020 = pd.read_csv('https://jtellier.fr/DataViz/full_2020.csv')
-    
-    df0 = df_full_2020.drop(columns=['id_mutation',
-                      'numero_disposition',
-                      'adresse_numero',
-                      'adresse_suffixe',
-                      'adresse_code_voie',
-                      'code_commune',
-                      'ancien_code_commune',
-                      'ancien_nom_commune',
-                      'id_parcelle',
-                      'ancien_id_parcelle',
-                      'numero_volume',
-                      'lot1_numero',
-                      'lot1_surface_carrez',
-                      'lot2_numero',
-                      'lot2_surface_carrez',
-                      'lot3_numero',
-                      'lot3_surface_carrez',
-                      'lot4_numero',
-                      'lot4_surface_carrez',
-                      'lot5_numero',
-                      'lot5_surface_carrez',
-                      'code_nature_culture_speciale',
-                      'nature_culture_speciale',
-                      'code_nature_culture',
-                      'nature_culture',
-                                'code_postal',
-                                'code_type_local',
-                                'surface_terrain',
-                                'nombre_lots'
-                      ])
-    
-    #uniformisation du type :
-    df0['code_departement'] = df0['code_departement'].astype(str)
-    
-    # echantillon de 10% enregistré sous df_lite :
-    df_lite0 = df0.sample(frac=0.1, replace=True, random_state=1)
+# df_full_2020 = load_dataset('full_2020.csv')
+
+# df0 = df_full_2020.drop(columns=['id_mutation',
+#                   'numero_disposition',
+#                   'adresse_numero',
+#                   'adresse_suffixe',
+#                   'adresse_code_voie',
+#                   'code_commune',
+#                   'ancien_code_commune',
+#                   'ancien_nom_commune',
+#                   'id_parcelle',
+#                   'ancien_id_parcelle',
+#                   'numero_volume',
+#                   'lot1_numero',
+#                   'lot1_surface_carrez',
+#                   'lot2_numero',
+#                   'lot2_surface_carrez',
+#                   'lot3_numero',
+#                   'lot3_surface_carrez',
+#                   'lot4_numero',
+#                   'lot4_surface_carrez',
+#                   'lot5_numero',
+#                   'lot5_surface_carrez',
+#                   'code_nature_culture_speciale',
+#                   'nature_culture_speciale',
+#                   'code_nature_culture',
+#                   'nature_culture',
+#                     'code_postal',
+#                     'code_type_local',
+#                     'surface_terrain',
+#                     'nombre_lots',
+#                     'adresse_nom_voie',
+#                   ])
+
+# #uniformisation du type :
+# df0['code_departement'] = df0['code_departement'].astype(str)
+
+# # echantillon de 10% enregistré sous df_lite :
+# #df_lite0 = df0.sample(frac=0.1, replace=True, random_state=1)
 
 
 
-    # --- DONNEES A ETUDIER ---
-    #df = load_dataset('df_lite.csv')
+# # --- DONNEES A ETUDIER ---
+# #df = load_dataset('df_lite.csv')
+
+# #le dataset que je souhaite étudier dans un premier temps se focalise uniquement sur la valeur_fonciere manquante
+# #df_nv.count() pour compter les valeurs manquantes facilement
+
+# # renommer le type "Local industriel. commercial ou assimilé" en "Autre local"
+# df0['type_local'] = df0['type_local'].replace({'Local industriel. commercial ou assimilé': 'Autre local'})
+
+# #création d'un mask pour garder les valeurs nulles de valeur_fonciere
+# df_nv_raw0 = use_mask(True, df0, 'valeur_fonciere')
+
+
+# # je retire à présent la colonne des rpix
+# df_nv = drop_col(df_nv_raw0, 'valeur_fonciere')
+
+# #utiliser le format datetime de pandas
+# df_nv['date'] = pd.to_datetime(df_nv['date_mutation'])
+
+# #enregistrement dans un nouveau csv allégé pour l'étude à mener
+# df_nv.to_csv('df_nv.csv', index=False)
     
-    #le dataset que je souhaite étudier dans un premier temps se focalise uniquement sur la valeur_fonciere manquante
-    #df_nv.count() pour compter les valeurs manquantes facilement
+#enregistrements des values_counts des types de locaux du dataset complet sous df0_type_vc.csv
+# df0_type_vc = df0['type_local'].value_counts()
+# df0_type_vc.to_csv('df0_type_vc.csv', index=False)    
+
+
+    # --- STREAMLIT PAGE --- 
     
-    # renommer le type "Local industriel. commercial ou assimilé" en "Autre local"
-    df0['type_local'] = df0['type_local'].replace({'Local industriel. commercial ou assimilé': 'Autre local'})
-    
-    #création d'un mask pour garder les valeurs nulles de valeur_fonciere
-    df_nv_raw0 = use_mask(True, df0, 'valeur_fonciere')
-    
-    
-    # je retire à nouveau colonnes sans interêts pour cette partie
-    
-    df_nv_raw1 = drop_col(df_nv_raw0, 'valeur_fonciere')
-    df_nv = drop_col(df_nv_raw1, 'adresse_nom_voie')
-    #df_nv_raw3 = drop_col(df_nv_raw2, 'surface_reelle_bati')
-    #df_nv = drop_col(df_nv_raw2, 'nombre_pieces_principales')
-    
+
+    df_nv = load_dataset('df_nv.csv')
+    df0_type_vc = load_dataset('df0_type_vc.csv')
     #utiliser le format datetime de pandas
     df_nv['date'] = pd.to_datetime(df_nv['date_mutation'])
-    
-    # --- STREAMLIT PAGE --- 
     
     #Introduction
     text = "Projet : Analyse du dataset 'Demande de valeurs foncières'"
@@ -265,8 +276,8 @@ def main():
         
         # filtre type >> selection multiple
         option_type = st.sidebar.multiselect("Choisir le type de bien",
-                                           df_nv['type_local'].unique(),
-                                           key="type")
+                                            df_nv['type_local'].unique(),
+                                            key="type")
         if len(option_type) > 0 :
             st.write('Types : ', *option_type)
     
@@ -278,12 +289,12 @@ def main():
         # Ce filtre n'est accessible que dans le cas d'une recherche d'appartement et/ou maison
         if any(e in ['Appartement','Maison'] for e in option_type):
             surface_min, surface_max = st.sidebar.slider('Choisir un nombre de pièces principales (logement)',
-                                                     int(df_nv['nombre_pieces_principales'].min()),
-                                                     int(df_nv['nombre_pieces_principales'].max()),
-                                                     (int(df_nv['nombre_pieces_principales'].min()),
-                                                     int(df_nv['nombre_pieces_principales'].max())),
-                                                     1,
-                                                     key='rooms')
+                                                      int(df_nv['nombre_pieces_principales'].min()),
+                                                      int(df_nv['nombre_pieces_principales'].max()),
+                                                      (int(df_nv['nombre_pieces_principales'].min()),
+                                                      int(df_nv['nombre_pieces_principales'].max())),
+                                                      1,
+                                                      key='rooms')
     
         # --- AFFICHAGE DES FILTRES --- 
     
@@ -323,8 +334,8 @@ def main():
     
     st.write("<font color='orange'>On observe une grande majorité de cas le 09 novembre</font>", unsafe_allow_html=True)
     st.write("<font color='lightgreen'>Valeurs manquantes dans la colonne 'date' : </font>",
-             100*round(1-len(drop_na(df_nv,'date'))/len(df_nv.index),1),
-             "<font color='lightgreen'>%</font>", unsafe_allow_html=True)
+              100*round(1-len(drop_na(df_nv,'date'))/len(df_nv.index),1),
+              "<font color='lightgreen'>%</font>", unsafe_allow_html=True)
     
     '____________'
     # histo type de biens
@@ -341,7 +352,7 @@ def main():
         st.pyplot(fig2)
     else : 
         # camembert des types de bien
-        type2 = round((df_nv['type_local'].value_counts()/df0['type_local'].value_counts()),3)*100
+        type2 = round((df_nv['type_local'].value_counts()/df0_type_vc),3)*100
         fig1,ax1 = plt.subplots()
         ax1.pie(type2, labels=type_nv.index, autopct='%1.1f%%')
         ax1.axis('equal')
@@ -349,8 +360,8 @@ def main():
         
     st.write("<font color='orange'>On observe une plus grande tendance de 'Appartement' et 'Dépendence' alors que 'Maison' est le plus répandu sur le dataset complet</font>", unsafe_allow_html=True)
     st.write("<font color='red'>Valeurs manquantes dans la colonne 'type_local' : </font>",
-             100*round(1-len(drop_na(df_nv,'type_local'))/len(df_nv.index),1),
-             "<font color='red'>%</font>", unsafe_allow_html=True)
+              100*round(1-len(drop_na(df_nv,'type_local'))/len(df_nv.index),1),
+              "<font color='red'>%</font>", unsafe_allow_html=True)
     '____________'
     # Localisation
     st.subheader('Top 5 des départements avec transactions sans prix renseigné')
@@ -358,16 +369,16 @@ def main():
     
     st.write("<font color='orange'>On observe une concentration accrue dans le département de l'Oise(60) </font>", unsafe_allow_html=True)
     st.write("<font color='lightgreen'>Valeurs manquantes dans la colonne 'code_departement' : </font>",
-             100*round(1-len(drop_na(df_nv,'code_departement'))/len(df_nv.index),1),
-             "<font color='lightgreen'>%</font>", unsafe_allow_html=True)
+              100*round(1-len(drop_na(df_nv,'code_departement'))/len(df_nv.index),1),
+              "<font color='lightgreen'>%</font>", unsafe_allow_html=True)
     '____________'
     st.subheader('Top 5 des communes avec transactions sans prix renseigné')
     st.bar_chart(commune_nv['pourcentage'].head(5))
     
     st.write("<font color='orange'>Sans surprise, une grande ville de l'Oise ressort : Compiègne </font>", unsafe_allow_html=True)
     st.write("<font color='lightgreen'>Valeurs manquantes dans la colonne 'nom_commune' : </font>",
-             100*round(1-len(drop_na(df_nv,'nom_commune'))/len(df_nv.index),1),
-             "<font color='lightgreen'>%</font>", unsafe_allow_html=True)
+              100*round(1-len(drop_na(df_nv,'nom_commune'))/len(df_nv.index),1),
+              "<font color='lightgreen'>%</font>", unsafe_allow_html=True)
     
     st.write("")
     st.write("")
