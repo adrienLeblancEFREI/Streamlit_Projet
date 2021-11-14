@@ -199,10 +199,8 @@ def main():
 
 
     # --- STREAMLIT PAGE --- 
-    
-
     df_nv = load_dataset('df_nv.csv')
-    df0_type_vc = load_dataset('df0_type_vc.csv')
+
     #utiliser le format datetime de pandas
     df_nv['date'] = pd.to_datetime(df_nv['date_mutation'])
     
@@ -352,9 +350,16 @@ def main():
         st.pyplot(fig2)
     else : 
         # camembert des types de bien
-        type2 = round((df_nv['type_local'].value_counts()/df0_type_vc),3)*100
+        #en rainson de l'enchantillonage, df0['type_local'].value_counts() n'est pas utilisable
+        #et stocker le resultat dans un .csv resulte en une erreur lors du plot
+        #j'utilise donc une liste simple avec les valeur et une avec les labels
+        # ce sont des valeurs rapportées
+        type_vc =[402271,298369,528257,86937]
+        labels= ['appartement','maison','autre local','dependence']
+
+        type2 = round((df_nv['type_local'].value_counts()/type_vc),3)*100
         fig1,ax1 = plt.subplots()
-        ax1.pie(type2, labels=type_nv.index, autopct='%1.1f%%')
+        ax1.pie(type2, labels=labels, autopct='%1.1f%%')
         ax1.axis('equal')
         st.pyplot(fig1)
         
